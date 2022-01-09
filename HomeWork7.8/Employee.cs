@@ -37,12 +37,19 @@ namespace HomeWork7._8
         public Employee (int id, string fullName, int heigh, DateTime bDay, string bPlace)
         {
             this.Id = id;
-            this.FullName = fullName;
-            this.Heigh = heigh;
-            this.BirthPlace = bPlace;
-            this.BirthDate = bDay;
-            this.Age = Convert.ToInt32(Math.Round(((DateTime.Now - bDay).TotalDays / 365.25), 0));
             this.CreationTime = DateTime.Now;
+            this.FullName = fullName;
+            this.Age = Convert.ToInt32(Math.Round(((DateTime.Now - bDay).TotalDays / 365.25), 0));
+            this.Heigh = heigh;
+            this.BirthDate = bDay;
+            this.BirthPlace = bPlace;
+        }
+        /// <summary>
+        /// вывод информации о сотруднике в консоль
+        /// </summary>
+        public void PrintEmployee()
+        {
+            Console.WriteLine($"{this.Id,3}| {this.CreationTime,16}| {this.FullName,25}| {this.Age,8}| {this.Heigh,3}см| {this.BirthDate,10}| {this.BirthPlace,20}");
         }
 
         #region Объявление автосвойств
