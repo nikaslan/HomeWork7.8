@@ -53,9 +53,10 @@ namespace HomeWork7._8
         /// <summary>
         /// считывание данных из базы во временную рабочую копию базы
         /// </summary>
-        public void LoadDatabase()
+        public bool LoadDatabase()
         {
-            if(DatabaseExistsCheck())
+            bool databaseLoaded = false;
+            if(this.DatabaseExistsCheck())
             {
                 /// если файл существует, то мы его считываем. Если он был пуст или был только что создан - то мы должны это проверить
                 /// считывая, мы записываем данные во временный стринг
@@ -69,7 +70,6 @@ namespace HomeWork7._8
                 {
                     Array.Resize(ref this.employees, databaseSize);
                 }
-
                 // читаем базу построчно и записываем непустые строчки в масси Employee[]
                 using (StreamReader sr = new StreamReader(this.databasePath))
                 {
@@ -83,7 +83,11 @@ namespace HomeWork7._8
                         }
                     }
                 }
-            }            
+
+                databaseLoaded = true;
+            }
+
+            return databaseLoaded;
         }
 
         public void PrintDatabaseToConsole()
@@ -91,9 +95,16 @@ namespace HomeWork7._8
             Console.WriteLine("Список сотрудников:\n");
             Console.WriteLine("ID | Добавлен        | Имя                      | Возраст | Рост | Дата рож. | Место рождения");
 
+            bool isEmpty = true; // проверяем существуют ли записи в репозитории. Записей не будет если файл был пуст или был только что создан
+
             foreach (Employee employee in this.employees)
             {
                 employee.PrintEmployee();
+                isEmpty = false;
+            }
+            if (isEmpty)
+            {
+                Console.WriteLine("База сотрудников пуста");
             }
 
         }
@@ -134,5 +145,6 @@ namespace HomeWork7._8
             return fileExists;
 
         }
+
     }
 }
