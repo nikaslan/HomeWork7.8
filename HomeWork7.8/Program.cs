@@ -34,7 +34,7 @@ namespace HomeWork7._8
                     dataBaseNeedsReload = false;
                 }
                 
-                Console.WriteLine("Нажмите 1 для вывода существующих записей. Нажмите 2 для внесения изменений. Для выхода, нажмите Esc.");
+                Console.WriteLine("Нажмите 1 для вывода существующих записей\nНажмите 2 для поиска определенной записи\nНажмите 3 для добавления записи\nНажмите Esc для выхода из программы.");
 
                 var key = Console.ReadKey(true).Key;
                 if (((char)key) == '1')
@@ -46,15 +46,24 @@ namespace HomeWork7._8
                     Console.Clear();
                     continue;
                 }
-                //else if (((char)key) == '2')
-                //{
-                //    Console.Clear();
-                //    AddEntryStream(filepath);
-                //    Console.WriteLine("\nНажмите любую кнопку для возврата на главный экран.");
-                //    Console.ReadKey(true);
-                //    Console.Clear();
-                //    continue;
-                //}
+                else if (((char)key) == '2')
+                {
+                    Console.Clear();
+                    repository.ViewAndEditEmployee();
+                    //Console.WriteLine("\nНажмите любую кнопку для возврата на главный экран.");
+                    //Console.ReadKey(true);
+                    Console.Clear();
+                    continue;
+                }
+                else if (((char)key) == '3')
+                {
+                    Console.Clear();
+                    repository.AddEmployee();
+                    Console.WriteLine("\nНажмите любую кнопку для возврата на главный экран.");
+                    Console.ReadKey(true);
+                    Console.Clear();
+                    continue;
+                }
                 else if (key == ConsoleKey.Escape)
                 {
                     Console.Clear();

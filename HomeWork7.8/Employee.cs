@@ -23,7 +23,6 @@ namespace HomeWork7._8
             this.Heigh = Convert.ToInt32(entryValues[4]);
             this.BirthDate = Convert.ToDateTime(entryValues[5]);
             this.BirthPlace = entryValues[6];
-
         }
 
         /// <summary>
@@ -34,6 +33,7 @@ namespace HomeWork7._8
         /// <param name="heigh">Рост сотрудника</param>
         /// <param name="bDay">День рождения сотрудника</param>
         /// <param name="bPlace">Место рождения сотрудника</param>
+        /// <param name="fileString">Строчка в файле базы</param>
         public Employee (int id, string fullName, int heigh, DateTime bDay, string bPlace)
         {
             this.Id = id;
@@ -49,11 +49,20 @@ namespace HomeWork7._8
         /// </summary>
         public void PrintEmployee()
         {
-            Console.WriteLine($"{this.Id,3}| {this.CreationTime,16}| {this.FullName,25}| {this.Age,8}| {this.Heigh,3}см| {this.BirthDate,10}| {this.BirthPlace,20}");
+            Console.WriteLine($"{this.Id,3}| {this.CreationTime,16:dd.MM.yyyy HH:mm}| {this.FullName,25}| {this.Age,8}| {this.Heigh,3}см| {this.BirthDate,10:dd.MM.yyyy}| {this.BirthPlace,20}");
+        }
+        /// <summary>
+        /// Переводит экземпляр структуры типа Employee в строку, в формате для записи в файл базы 
+        /// </summary>
+        /// <returns></returns>
+        public string ToFile()
+        {
+            string line = $"{this.Id}#{this.CreationTime:dd.MM.yyyy HH:mm}#{this.FullName}#{this.Age}#{this.Heigh}#{this.BirthDate:dd.MM.yyyy}#{this.BirthPlace}";
+            return line;
         }
 
         #region Объявление автосвойств
-        private int Id { get; set; }
+        public int Id { get; private set; }
         /// <summary>
         /// Дата создания записи в базе
         /// </summary>
