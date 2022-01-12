@@ -22,6 +22,8 @@ namespace HomeWork7._8
         /// </summary>
         private int databaseSize;
 
+        private string titles;
+
         /// <summary>
         /// Определяем размер базы данных
         /// </summary>
@@ -48,6 +50,7 @@ namespace HomeWork7._8
             this.databasePath = filePath;
             this.databaseSize = 0;
             this.employees = new Employee[0];
+            this.titles = "ID | Добавлен        | Имя                      | Возраст | Рост | Дата рож. | Место рождения";
         }
 
         /// <summary>
@@ -94,8 +97,8 @@ namespace HomeWork7._8
         /// </summary>
         public void PrintDatabaseToConsole()
         {
-            Console.WriteLine("Список сотрудников:\n");
-            Console.WriteLine("ID | Добавлен        | Имя                      | Возраст | Рост | Дата рож. | Место рождения");
+            Console.WriteLine("Список сотрудников:");
+            Console.WriteLine($"\n{titles}");
 
             bool isEmpty = true; // проверяем существуют ли записи в репозитории. Записей не будет если файл был пуст или был только что создан
 
@@ -152,10 +155,11 @@ namespace HomeWork7._8
         /// ЭТОТ МЕТОД Я ХОЧУ ИСПОЛЬЗОВАТЬ ДЛЯ ЗАПИСИ КАК НОВОЙ СТРОКИ В ФАЙЛ, ТАК И ДЛЯ ПЕРЕЗАПИСИ УЖЕ СУЩЕСТВУЮЩЕЙ
         /// </summary>
         /// <param name="newEntry">экземпляр Employee с новыми данными</param>
-        private void UpdateDatabaseEntry(Employee newEntry)
+        /// <param name="line">Порядковый номер элемента в массиве, который мы будем записывать. -1 для создания новой записи</param>
+        private void UpdateDatabaseEntry(Employee newEntry, int line)
         {
             Console.WriteLine("\nВ справочник будет внесена следующая запись:");
-            Console.WriteLine("\nID | Добавлен        | Имя                      | Возраст | Рост | Дата рож. | Место рождения");
+            Console.WriteLine($"\n{titles}");
             newEntry.PrintEmployee();
 
             Console.WriteLine("\nЕсли хотите подтвердить внесение записи, нажмите Enter. Для отмены - нажмите Esc.");
@@ -165,16 +169,28 @@ namespace HomeWork7._8
                 var key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.Enter)
                 { 
-                    if (this.employees[databaseSize - 1].Id < newEntry.Id)
-                    { 
+                    if (line == -1) // -1 передаем когда добавляем новую запись
+                    {
+                        databaseSize++;
+                        Array.Resize(ref employees, databaseSize);
+                        employees[databaseSize - 1] = newEntry;
                         using (StreamWriter sw = new StreamWriter(databasePath, true, Encoding.UTF8))
                         {
                             sw.WriteLine(newEntry.ToFile()); //добавление новой записи в файл
                         }
-                        databaseSize++;
-                        Array.Resize(ref employees, databaseSize);
-                        employees[databaseSize - 1] = newEntry;
                     }
+                    else
+                    {
+                        employees[line] = newEntry; // перезапись элемента массива под номером = line новыми данными
+                        using (StreamWriter sw = new StreamWriter(databasePath, false, Encoding.UTF8))
+                        {
+                            foreach (var employee in employees) //перезапись в файл всего массива Сотрудников из репозитория
+                            {
+                                sw.WriteLine(employee.ToFile());
+                            }                            
+                        }
+                    }
+                    
 
                     Console.WriteLine("\nЗапись внесена");
                     break;
@@ -260,27 +276,101 @@ namespace HomeWork7._8
             return newEmployee;
         }
 
-        //private Employee EditEmployee(Employee oldEntry)
-        //{
-        //    Employee newEmployee;
+        private Employee EditEmployee(int line)
+        {
+            // создаем переменные, в которых мы будем сохранять измененные данные. При создании данные совпадают с оригиналом
+            string editName = employees[line].FullName;
+            int editHeigh = employees[line].Heigh;
+            DateTime editBirthDate = employees[line].BirthDate;
+            string editBirthPlace = employees[line].BirthPlace;
 
+            Console.WriteLine("Укажите какое значение в записи вы хотите изменить:");
+            Console.WriteLine("Нажмите 1 для изменения Ф.И.О сотрудника");
+            Console.WriteLine("Нажмите 2 для изменения информации о росте сотрудника");
+            Console.WriteLine("Нажмите 3 для изменения информации о дате рождения сотрудника");
+            Console.WriteLine("Нажмите 4 для изменения информации о месте рождения сотрудника");
 
+            while (true)
+            {
+                var key = Console.ReadKey(true).Key;
+                // меняем ФИО
+                if (((char)key) == '1') 
+                {
+                    Console.WriteLine("Введите новое значение Ф.И.О и нажмите Enter. *Только первые 25 символов имени будут сохранены:");
+                    editName = Console.ReadLine();
+                    if (editName.Length > 25) editName = editName.Substring(0, 25);
+                    break;
+                }
+                // меняем рост
+                else if (((char)key) == '2') 
+                {
+                    Console.WriteLine("\nВведите новое значение роста сотрудника в сантимертах:");
+                    
+                    while (true)
+                    {
+                        if (int.TryParse(Console.ReadLine(), out editHeigh))
+                        {
+                            if (editHeigh < 50 || editHeigh > 250)
+                            {
+                                Console.WriteLine("Введенный рост должен быть между 50 см и 250 см");
+                                continue;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        else { Console.WriteLine("Некорректный данные о росте.");}
+                    }
+                    break;
+                }
+                // меняем дату рождения
+                else if (((char)key) == '3')
+                {
+                    Console.WriteLine("\nВведите новое значение даты рождения сотрудника в формате дд.мм.гггг:");
+                    
+                    while (true)
+                    {
+                        if (DateTime.TryParse(Console.ReadLine(), out editBirthDate))
+                        {
 
+                            if (editBirthDate > DateTime.Now)
+                            {
+                                Console.WriteLine("Дата рождения должна быть в прошлом.");
+                                continue;
+                            }
+                            break;
+                        }
+                        else { Console.WriteLine("Некорректный формат времени."); }
+                    }
+                    break;
+                }
+                // меняем место рождения
+                else if (((char)key) == '4')
+                {
+                    Console.WriteLine("\nВведите новое значение места рождения сотрудника:");
+                    editBirthPlace = Console.ReadLine();
+                    if (editBirthPlace.Length > 20) editBirthPlace = editBirthPlace.Substring(0, 20);
+                    break;
+                }
+            }
 
-        //    return newEmployee;
-        //}
+            Employee editEmployee = new Employee(employees[line].Id, editName, editHeigh, editBirthDate, editBirthPlace); 
+
+            return editEmployee;
+        }
         /// <summary>
         /// Метод добавления нового сотрудника, который можно вызывать извне 
         /// </summary>
         public void AddEmployee()
         {
-            UpdateDatabaseEntry(NewEmployee());
+            UpdateDatabaseEntry(NewEmployee(), -1);
         }
 
         public void ViewAndEditEmployee()
         {
-            Employee existingEmployeeEntry = new Employee();
             bool employeeFound = false;
+            int tempNum = 0; // порядковый номер нужной нам записи в репозитории
             
             
             while (true)
@@ -288,20 +378,21 @@ namespace HomeWork7._8
                 Console.WriteLine("Для просмотра сведений о сотруднике введите его ID.");
                 if (Int32.TryParse(Console.ReadLine(), out int employeeID)) 
                 {
-                    foreach (Employee employee in employees) // сравниваем введенный ID со всем ID сотрудников, которых считали в репозиторий
+                    foreach (Employee employee in employees) // сравниваем введенный ID со всеми ID сотрудников, которых считали в репозиторий
                     {
                         if (employeeID == employee.Id)
                         {
-                            existingEmployeeEntry = employee;
                             employeeFound = true; // нашли совпадение
+                            break;
                         }
+                        tempNum++;
                     }
 
                     if (employeeFound) // если мы нашли сотрудника с нужным ID
                     {
                         Console.Clear();
-                        Console.WriteLine("ID | Добавлен        | Имя                      | Возраст | Рост | Дата рож. | Место рождения");
-                        existingEmployeeEntry.PrintEmployee();
+                        Console.WriteLine($"\n{titles}");
+                        employees[tempNum].PrintEmployee();
                         break;
                     }
                     else
@@ -323,9 +414,7 @@ namespace HomeWork7._8
                 var key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.Enter)
                 {
-                    Console.WriteLine("Функционал пока не реализован. Нажмите любую кнопку для выхода.");
-                    //UpdateDatabaseEntry(EditEmployee(existingEmployeeEntry));
-                    Console.ReadKey(true);
+                    UpdateDatabaseEntry(EditEmployee(tempNum),tempNum);
                     break;
                 }
                 else if (key == ConsoleKey.Escape)

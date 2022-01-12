@@ -66,27 +66,27 @@ namespace HomeWork7._8
         /// <summary>
         /// Дата создания записи в базе
         /// </summary>
-        private DateTime CreationTime { get; set; }
+        public DateTime CreationTime { get; private set; }
         /// <summary>
         /// Ф.И.О сотрудника
         /// </summary>
-        private string FullName { get; set; }
+        public string FullName { get; private set; }
         /// <summary>
         /// Возраст сотрудника
         /// </summary>
-        private int Age { get; set; }
+        public int Age { get; private set; }
         /// <summary>
         /// Рост сотрудника
         /// </summary>
-        private int Heigh { get; set; }
+        public int Heigh { get; private set; }
         /// <summary>
         /// Дата рождения сотрудника
         /// </summary>
-        private DateTime BirthDate { get; set; }
+        public DateTime BirthDate { get; private set; }
         /// <summary>
         /// Место рождения сотрудника
         /// </summary>
-        private string BirthPlace { get; set; }
+        public string BirthPlace { get; private set; }
         #endregion
 
     }
