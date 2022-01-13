@@ -17,7 +17,7 @@ namespace HomeWork7._8
             // объявление переменных
             string filepath = "catalogue.txt";  // путь до файла, в котором хранится база сотрудников
             bool dataBaseNeedsReload = true;
-            Database repository = new Database(filepath);
+            EmployeeRepository repository = new EmployeeRepository(filepath);
 
             while (true)
             {

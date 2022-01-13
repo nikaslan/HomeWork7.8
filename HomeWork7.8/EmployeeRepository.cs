@@ -7,7 +7,7 @@ using System.IO;
 
 namespace HomeWork7._8
 {
-    struct Database
+    struct EmployeeRepository
     {
         /// <summary>
         /// Массив переменных типа Employee
@@ -45,7 +45,7 @@ namespace HomeWork7._8
         /// Создание временной рабочей копии базы данных
         /// </summary>
         /// <param name="filePath"></param>
-        public Database(string filePath)
+        public EmployeeRepository(string filePath)
         {
             this.databasePath = filePath;
             this.databaseSize = 0;
@@ -104,7 +104,7 @@ namespace HomeWork7._8
 
             foreach (Employee employee in this.employees)
             {
-                employee.PrintEmployee();
+                PrintEmployee(employee);
                 isEmpty = false;
             }
             if (isEmpty)
@@ -112,6 +112,23 @@ namespace HomeWork7._8
                 Console.WriteLine("База сотрудников пуста");
             }
 
+        }
+
+        /// <summary>
+        /// вывод информации о сотруднике в консоль
+        /// </summary>
+        public void PrintEmployee(Employee employee)
+        {
+            Console.WriteLine($"{employee.Id,3}| {employee.CreationTime,16:dd.MM.yyyy HH:mm}| {employee.FullName,25}| {employee.Age(),8}| {employee.Heigh,3}см| {employee.BirthDate,10:dd.MM.yyyy}| {employee.BirthPlace,20}");
+        }
+        /// <summary>
+        /// Переводит экземпляр структуры типа Employee в строку, в формате для записи в файл базы 
+        /// </summary>
+        /// <returns></returns>
+        public string ToFile(Employee employee)
+        {
+            string line = $"{employee.Id}#{employee.CreationTime:dd.MM.yyyy HH:mm}#{employee.FullName}#{employee.Age()}#{employee.Heigh}#{employee.BirthDate:dd.MM.yyyy}#{employee.BirthPlace}";
+            return line;
         }
 
         /// <summary>
@@ -160,7 +177,7 @@ namespace HomeWork7._8
         {
             Console.WriteLine("\nВ справочник будет внесена следующая запись:");
             Console.WriteLine($"\n{titles}");
-            newEntry.PrintEmployee();
+            PrintEmployee(newEntry);
 
             Console.WriteLine("\nЕсли хотите подтвердить внесение записи, нажмите Enter. Для отмены - нажмите Esc.");
             while (true)
@@ -176,7 +193,7 @@ namespace HomeWork7._8
                         employees[databaseSize - 1] = newEntry;
                         using (StreamWriter sw = new StreamWriter(databasePath, true, Encoding.UTF8))
                         {
-                            sw.WriteLine(newEntry.ToFile()); //добавление новой записи в файл
+                            sw.WriteLine(ToFile(newEntry)); //добавление новой записи в файл
                         }
                     }
                     else
@@ -186,7 +203,7 @@ namespace HomeWork7._8
                         {
                             foreach (var employee in employees) //перезапись в файл всего массива Сотрудников из репозитория
                             {
-                                sw.WriteLine(employee.ToFile());
+                                sw.WriteLine(ToFile(employee));
                             }                            
                         }
                     }
@@ -392,7 +409,7 @@ namespace HomeWork7._8
                     {
                         Console.Clear();
                         Console.WriteLine($"\n{titles}");
-                        employees[tempNum].PrintEmployee();
+                        PrintEmployee(employees[tempNum]);
                         break;
                     }
                     else

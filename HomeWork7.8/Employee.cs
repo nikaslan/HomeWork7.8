@@ -39,7 +39,6 @@ namespace HomeWork7._8
             this.Id = id;
             this.CreationTime = DateTime.Now;
             this.FullName = fullName;
-            this.Age = Convert.ToInt32(Math.Round(((DateTime.Now - bDay).TotalDays / 365.25), 0));
             this.Heigh = heigh;
             this.BirthDate = bDay;
             this.BirthPlace = bPlace;
@@ -47,19 +46,6 @@ namespace HomeWork7._8
         /// <summary>
         /// вывод информации о сотруднике в консоль
         /// </summary>
-        public void PrintEmployee()
-        {
-            Console.WriteLine($"{this.Id,3}| {this.CreationTime,16:dd.MM.yyyy HH:mm}| {this.FullName,25}| {this.Age,8}| {this.Heigh,3}см| {this.BirthDate,10:dd.MM.yyyy}| {this.BirthPlace,20}");
-        }
-        /// <summary>
-        /// Переводит экземпляр структуры типа Employee в строку, в формате для записи в файл базы 
-        /// </summary>
-        /// <returns></returns>
-        public string ToFile()
-        {
-            string line = $"{this.Id}#{this.CreationTime:dd.MM.yyyy HH:mm}#{this.FullName}#{this.Age}#{this.Heigh}#{this.BirthDate:dd.MM.yyyy}#{this.BirthPlace}";
-            return line;
-        }
 
         #region Объявление автосвойств
         public int Id { get; private set; }
@@ -74,7 +60,10 @@ namespace HomeWork7._8
         /// <summary>
         /// Возраст сотрудника
         /// </summary>
-        public int Age { get; private set; }
+        public int Age() 
+        {
+            return Convert.ToInt32(Math.Round(((DateTime.Now - bDay).TotalDays / 365.25), 0));
+        }
         /// <summary>
         /// Рост сотрудника
         /// </summary>
